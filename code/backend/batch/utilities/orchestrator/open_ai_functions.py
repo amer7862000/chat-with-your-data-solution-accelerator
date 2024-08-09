@@ -83,6 +83,7 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
         )
 
         # TODO: call content safety if needed
+        answer = None
 
         if result.choices[0].finish_reason == "function_call":
             logger.info("Function call detected")
@@ -132,7 +133,8 @@ class OpenAIFunctionsOrchestrator(OrchestratorBase):
 
         # Call Content Safety tool
         if self.config.prompts.enable_content_safety:
-            if response := self.call_content_safety_output(user_message, answer.answer):
+
+            if answer and (response := self.call_content_safety_output(user_message, answer.answer)):
                 return response
 
         # Format the output for the UI
